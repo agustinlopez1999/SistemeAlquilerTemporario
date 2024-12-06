@@ -5,6 +5,7 @@ const {
   createPropiedad,
   updatePropiedad,
   deletePropiedad,
+  getPropiedadesByUsuario,
 } = require("../controllers/propiedadesController");
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.get("/:id", getPropiedadById);
 router.post("/", createPropiedad);
 router.put("/:id", updatePropiedad);
 router.delete("/:id", deletePropiedad);
+router.get("/usuario/:id_usuario", getPropiedadesByUsuario);
 
 module.exports = router;

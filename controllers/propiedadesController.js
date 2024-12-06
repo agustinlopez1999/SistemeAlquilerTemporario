@@ -25,6 +25,20 @@ exports.getPropiedadById = async (req, res) => {
   }
 };
 
+exports.getPropiedadesByUsuario = async (req, res) => {
+  const { id_usuario } = req.params;
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM Propiedad WHERE id_usuario = ?",
+      [id_usuario]
+    );
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener propiedades del usuario" });
+  }
+};
+
+// Actualizar el método de creación para asegurar que el id_usuario sea obligatorio
 exports.createPropiedad = async (req, res) => {
   const {
     nombre,
@@ -38,6 +52,10 @@ exports.createPropiedad = async (req, res) => {
     capacidad_maxima,
     id_usuario,
   } = req.body;
+
+  if (!id_usuario) {
+    return res.status(400).json({ error: "El id_usuario es obligatorio" });
+  }
 
   try {
     const [result] = await pool.query(
