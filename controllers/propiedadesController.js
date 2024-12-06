@@ -133,6 +133,10 @@ exports.updatePropiedad = async (req, res) => {
 exports.deletePropiedad = async (req, res) => {
   const { id } = req.params;
   try {
+    // Eliminar primero los alquileres relacionados
+    await pool.query("DELETE FROM Alquiler WHERE id_propiedad = ?", [id]);
+
+    // Luego eliminar la propiedad
     const [result] = await pool.query(
       "DELETE FROM Propiedad WHERE id_propiedad = ?",
       [id]
