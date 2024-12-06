@@ -3,6 +3,7 @@ const usuariosRoutes = require("./routes/usuarios");
 const propiedadesRoutes = require("./routes/propiedades");
 const alquileresRoutes = require("./routes/alquileres");
 const gastosRoutes = require("./routes/gastos");
+const impuestosRoutes = require("./routes/impuestos");
 const pool = require("./db");
 
 const app = express();
@@ -15,6 +16,7 @@ app.use("/usuarios", usuariosRoutes);
 app.use("/propiedades", propiedadesRoutes);
 app.use("/alquileres", alquileresRoutes);
 app.use("/gastos", gastosRoutes);
+app.use("/impuestos", impuestosRoutes);
 
 // Servidor en ejecución
 const PORT = process.env.PORT || 3000;
