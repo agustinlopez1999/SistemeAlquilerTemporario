@@ -4,6 +4,7 @@ const propiedadesRoutes = require("./routes/propiedades");
 const alquileresRoutes = require("./routes/alquileres");
 const gastosRoutes = require("./routes/gastos");
 const impuestosRoutes = require("./routes/impuestos");
+const notificacionesRoutes = require("./routes/notificaciones");
 const pool = require("./db");
 
 const app = express();
@@ -17,6 +18,7 @@ app.use("/propiedades", propiedadesRoutes);
 app.use("/alquileres", alquileresRoutes);
 app.use("/gastos", gastosRoutes);
 app.use("/impuestos", impuestosRoutes);
+app.use("/notificaciones", notificacionesRoutes);
 
 // Servidor en ejecución
 const PORT = process.env.PORT || 3000;
