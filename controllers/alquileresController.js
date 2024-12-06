@@ -152,3 +152,30 @@ exports.deleteAlquiler = async (req, res) => {
     res.status(500).json({ error: "Error al eliminar el alquiler" });
   }
 };
+
+exports.getAlquileresByUsuario = async (req, res) => {
+  const { id_usuario } = req.params;
+  try {
+    const [rows] = await pool.query(
+      `SELECT a.id_alquiler, a.fecha_inicio, a.fecha_fin, a.monto, 
+              p.nombre AS propiedad 
+       FROM Alquiler a
+       JOIN Propiedad p ON a.id_propiedad = p.id_propiedad
+       WHERE p.id_usuario = ?`,
+      [id_usuario]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        error: `No hay alquileres registrados para el usuario con ID ${id_usuario}`,
+      });
+    }
+
+    res.json(rows);
+  } catch (error) {
+    console.error("Error al obtener los alquileres por usuario:", error);
+    res
+      .status(500)
+      .json({ error: "Error al obtener los alquileres por usuario" });
+  }
+};

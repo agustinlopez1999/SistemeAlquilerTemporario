@@ -5,6 +5,7 @@ const {
   createAlquiler,
   updateAlquiler,
   deleteAlquiler,
+  getAlquileresByUsuario,
 } = require("../controllers/alquileresController");
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.get("/:id_propiedad", getAlquileresByPropiedad); // Filtrar alquileres po
 router.post("/", createAlquiler); // Crear un nuevo alquiler
 router.put("/:id", updateAlquiler);
 router.delete("/:id", deleteAlquiler);
+router.get("/usuario/:id_usuario", getAlquileresByUsuario); // Filtrar alquileres por usuario
 
 module.exports = router;
