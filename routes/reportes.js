@@ -1,9 +1,9 @@
 const express = require("express");
-const { getReporteFinanciero } = require("../controllers/reportesController"); // Asegúrate de que esta ruta sea correcta
+const { getReportesFinancieros } = require("../controllers/reportesController");
 
 const router = express.Router();
 
-// Ruta para generar reportes financieros
-router.get("/", getReporteFinanciero);
+// Ruta para obtener reportes financieros
+router.get("/", getReportesFinancieros);
 
 module.exports = router;

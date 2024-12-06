@@ -6,7 +6,6 @@ const gastosRoutes = require("./routes/gastos");
 const impuestosRoutes = require("./routes/impuestos");
 const notificacionesRoutes = require("./routes/notificaciones");
 const reportesRoutes = require("./routes/reportes");
-const pool = require("./db");
 
 const app = express();
 
