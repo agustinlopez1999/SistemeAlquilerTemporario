@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const usuariosRoutes = require("./routes/usuarios");
 const propiedadesRoutes = require("./routes/propiedades");
 const alquileresRoutes = require("./routes/alquileres");
@@ -11,6 +12,7 @@ const app = express();
 
 // Middleware para procesar JSON
 app.use(express.json());
+app.use(cors());
 
 // Rutas
 app.use("/usuarios", usuariosRoutes);
