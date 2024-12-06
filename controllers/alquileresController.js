@@ -81,11 +81,9 @@ exports.getAlquileresByPropiedad = async (req, res) => {
     );
 
     if (rows.length === 0) {
-      return res
-        .status(404)
-        .json({
-          error: `No hay alquileres registrados para la propiedad con ID ${id_propiedad}`,
-        });
+      return res.status(404).json({
+        error: `No hay alquileres registrados para la propiedad con ID ${id_propiedad}`,
+      });
     }
 
     res.json(rows);
@@ -94,5 +92,63 @@ exports.getAlquileresByPropiedad = async (req, res) => {
     res
       .status(500)
       .json({ error: "Error al obtener los alquileres por propiedad" });
+  }
+};
+
+//Actualizar alquileres
+exports.updateAlquiler = async (req, res) => {
+  const { id } = req.params;
+  const { fecha_inicio, fecha_fin, monto, id_propiedad } = req.body;
+
+  try {
+    // Validar que no haya solapamientos de fechas
+    const [overlappingAlquileres] = await pool.query(
+      `SELECT * FROM Alquiler 
+       WHERE id_propiedad = ? AND id_alquiler != ? 
+       AND ((fecha_inicio BETWEEN ? AND ?) OR (fecha_fin BETWEEN ? AND ?))`,
+      [id_propiedad, id, fecha_inicio, fecha_fin, fecha_inicio, fecha_fin]
+    );
+
+    if (overlappingAlquileres.length > 0) {
+      return res.status(400).json({
+        error: "Las fechas ingresadas se solapan con un alquiler existente",
+      });
+    }
+
+    // Actualizar el alquiler
+    const [result] = await pool.query(
+      `UPDATE Alquiler 
+       SET fecha_inicio = ?, fecha_fin = ?, monto = ?, id_propiedad = ?
+       WHERE id_alquiler = ?`,
+      [fecha_inicio, fecha_fin, monto, id_propiedad, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Alquiler no encontrado" });
+    }
+
+    res.json({ message: "Alquiler actualizado correctamente" });
+  } catch (error) {
+    console.error("Error al actualizar el alquiler:", error);
+    res.status(500).json({ error: "Error al actualizar el alquiler" });
+  }
+};
+
+exports.deleteAlquiler = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [result] = await pool.query(
+      "DELETE FROM Alquiler WHERE id_alquiler = ?",
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Alquiler no encontrado" });
+    }
+
+    res.json({ message: "Alquiler eliminado correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar el alquiler:", error);
+    res.status(500).json({ error: "Error al eliminar el alquiler" });
   }
 };
