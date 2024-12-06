@@ -132,22 +132,30 @@ exports.updatePropiedad = async (req, res) => {
 
 exports.deletePropiedad = async (req, res) => {
   const { id } = req.params;
+  const connection = await pool.getConnection(); // Obtén una conexión transaccional
   try {
+    await connection.beginTransaction(); // Inicia la transacción
+
     // Eliminar primero los alquileres relacionados
-    await pool.query("DELETE FROM Alquiler WHERE id_propiedad = ?", [id]);
+    await connection.query("DELETE FROM Alquiler WHERE id_propiedad = ?", [id]);
 
     // Luego eliminar la propiedad
-    const [result] = await pool.query(
+    const [result] = await connection.query(
       "DELETE FROM Propiedad WHERE id_propiedad = ?",
       [id]
     );
 
     if (result.affectedRows === 0) {
+      await connection.rollback(); // Revertir si no se encuentra la propiedad
       return res.status(404).json({ error: "Propiedad no encontrada" });
     }
 
+    await connection.commit(); // Confirma la transacción
     res.json({ message: "Propiedad eliminada correctamente" });
   } catch (error) {
+    await connection.rollback(); // Revertir en caso de error
     res.status(500).json({ error: "Error al eliminar la propiedad" });
+  } finally {
+    connection.release(); // Libera la conexión
   }
 };
