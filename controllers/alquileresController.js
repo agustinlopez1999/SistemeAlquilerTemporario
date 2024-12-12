@@ -42,8 +42,8 @@ exports.createAlquiler = async (req, res) => {
 
     // Insertar el nuevo alquiler
     const [result] = await pool.query(
-      "INSERT INTO Alquiler (fecha_inicio, fecha_fin, monto, id_propiedad) VALUES (?, ?, ?, ?)",
-      [fecha_inicio, fecha_fin, monto, id_propiedad]
+      "INSERT INTO Alquiler (fecha_inicio, fecha_fin, monto, id_propiedad, status) VALUES (?, ?, ?, ?, ?)",
+      [fecha_inicio, fecha_fin, monto, id_propiedad, "pendiente"]
     );
 
     // Retornar la respuesta con los datos del alquiler creado
@@ -98,7 +98,7 @@ exports.getAlquileresByPropiedad = async (req, res) => {
 //Actualizar alquileres
 exports.updateAlquiler = async (req, res) => {
   const { id } = req.params;
-  const { fecha_inicio, fecha_fin, monto, id_propiedad } = req.body;
+  const { fecha_inicio, fecha_fin, monto, id_propiedad, status } = req.body;
 
   try {
     // Validar que no haya solapamientos de fechas
@@ -118,9 +118,9 @@ exports.updateAlquiler = async (req, res) => {
     // Actualizar el alquiler
     const [result] = await pool.query(
       `UPDATE Alquiler 
-       SET fecha_inicio = ?, fecha_fin = ?, monto = ?, id_propiedad = ?
+       SET fecha_inicio = ?, fecha_fin = ?, monto = ?, id_propiedad = ?, status = ?
        WHERE id_alquiler = ?`,
-      [fecha_inicio, fecha_fin, monto, id_propiedad, id]
+      [fecha_inicio, fecha_fin, monto, id_propiedad, status, id]
     );
 
     if (result.affectedRows === 0) {
@@ -134,6 +134,7 @@ exports.updateAlquiler = async (req, res) => {
   }
 };
 
+//Eliminar Alquiler
 exports.deleteAlquiler = async (req, res) => {
   const { id } = req.params;
   try {
@@ -153,11 +154,12 @@ exports.deleteAlquiler = async (req, res) => {
   }
 };
 
+//Obtener alquileres por usuario
 exports.getAlquileresByUsuario = async (req, res) => {
   const { id_usuario } = req.params;
   try {
     const [rows] = await pool.query(
-      `SELECT a.id_alquiler, a.fecha_inicio, a.fecha_fin, a.monto, 
+      `SELECT a.id_alquiler, a.fecha_inicio, a.fecha_fin, a.monto, a.status, 
               p.nombre AS propiedad 
        FROM Alquiler a
        JOIN Propiedad p ON a.id_propiedad = p.id_propiedad

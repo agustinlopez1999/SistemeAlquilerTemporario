@@ -60,8 +60,8 @@ exports.createPropiedad = async (req, res) => {
   try {
     const [result] = await pool.query(
       `INSERT INTO Propiedad 
-       (nombre, direccion, descripcion, precio_alquiler_diario, valor_propiedad, cantidad_habitaciones, cantidad_ambientes, cantidad_banos, capacidad_maxima, id_usuario) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (nombre, direccion, descripcion, precio_alquiler_diario, valor_propiedad, cantidad_habitaciones, cantidad_ambientes, cantidad_banos, capacidad_maxima, id_usuario, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         nombre,
         direccion,
@@ -73,6 +73,7 @@ exports.createPropiedad = async (req, res) => {
         cantidad_banos,
         capacidad_maxima,
         id_usuario,
+        "activo",
       ]
     );
 
@@ -99,12 +100,13 @@ exports.updatePropiedad = async (req, res) => {
     cantidad_ambientes,
     cantidad_banos,
     capacidad_maxima,
+    status,
   } = req.body;
 
   try {
     const [result] = await pool.query(
       `UPDATE Propiedad 
-       SET nombre = ?, direccion = ?, descripcion = ?, precio_alquiler_diario = ?, valor_propiedad = ?, cantidad_habitaciones = ?, cantidad_ambientes = ?, cantidad_banos = ?, capacidad_maxima = ?
+       SET nombre = ?, direccion = ?, descripcion = ?, precio_alquiler_diario = ?, valor_propiedad = ?, cantidad_habitaciones = ?, cantidad_ambientes = ?, cantidad_banos = ?, capacidad_maxima = ?, status = ?
        WHERE id_propiedad = ?`,
       [
         nombre,
@@ -116,6 +118,7 @@ exports.updatePropiedad = async (req, res) => {
         cantidad_ambientes,
         cantidad_banos,
         capacidad_maxima,
+        status,
         id,
       ]
     );
